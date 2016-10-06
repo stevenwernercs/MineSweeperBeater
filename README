@@ -1,0 +1,46 @@
+#https://www.autoitscript.com/forum/topic/35201-minesweeper-beater/
+
+Bones8185
+Members
+ 0
+12 posts
+#1 · Posted October 26, 2006 (edited)
+:wacko2:
+
+EDIT: I venture to say that this is the only program on the forum that actually plays minesweeper for real!! I rule :lmao: , I will be fixing my code and I would like any one to post an original code that will actually play the game properly and beat my weak times...
+
+B:2
+
+I:7
+
+A:35
+
+EDIT: I've been looking at other minesweeper programs and I have no how they even work, I modeled mine after the way it is played for real, I'm still looking for one that doesn't "cheat" (odd irony)
+
+This doesn't deserve to be here, turn back now if you don't want to waste your time.
+
+I made this right when I joined the forum, just started looking at it again, tried to clean it up, still very rusty.
+
+It first chooses a few random clicks until it can logically continue to solve the little puzzle that is minesweeper.
+
+Since every number that denotes the num of mines is a diff color It uses that and continues on and down up search pattern.
+
+Works in any diff, and even custom. Still, can only logically solve. With advanced it can get you close and you have to finish most of the time by guessing.
+
+My lil' Bot got: (couldn't find out how to make the little pic images)
+
+Screen Shot
+
+Forgive the crudeness I warned you.
+
+:x
+
+I know I need to do some thing about the long funcs, but they need to be there for it to know what boxes are surrounding it, i.e. the top left only has three and so on...
+
+Any pointers in faster execution or just better scripting??
+
+NOTE: in order for it to work properly you would need to change your desktop theme to classic(like my older comp that I scripted this on), XP window titles are fatter and mess up my pixel size calcs, sorry  :unsure:
+
+Lol, if your still even reading this, thanx!  o:)
+
+Note the hot keys too...
