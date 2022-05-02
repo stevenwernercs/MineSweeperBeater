@@ -1,3 +1,11 @@
+#Windows11 Notes
+
+	Autoit's Pixel Color fetch is extremely slow due to DWM running (apparently)
+	Note that this used to be much faster (see times below)
+
+
+-------------------------------
+
 #https://www.autoitscript.com/forum/topic/35201-minesweeper-beater/
 
 Bones8185
