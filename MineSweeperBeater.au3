@@ -1,177 +1,175 @@
 
 HotKeySet("{ENTER}", "scan")
-HotKeySet("{SPACE}", "randclick")
+HotKeySet("{SPACE}", "randclickHot")
 HotKeySet("{ESC}", "Terminate")
-HotKeySet("{HOME}", "reload")
+HotKeySet("{HOME}", "reStart")
 
     WinMinimizeAll()
+ $xOffset = 15
+Global $yOffset = 101 ;Windows xp (with classic theme) header was '96' pixels high, running in windows 11 its 101
+Global $box    = 16
+
+Global $xBorder = 27 ;width of pixels left and right of minefield
+Global $yBorder = 112 ;(windows xp was 107) hight of pixels above/below minefield
+
+Func randclickHot()
+    randclick(0)
+EndFunc   ;==>HotKeyFunc
 
 ;get Minesweeper//////////////////////////////////////////////////////////////////
     If NOT WinExists("Minesweeper") Then
-            Run("C:\WINDOWS\system32\winmine.exe")
+			Run("C:\Users\steve\Documents\Drive\Archives\Powers\WINDOWS\system32\winmine.exe")
+            ;Run("C:\WINDOWS\system32\winmine.exe")
             WinWaitActive("Minesweeper")
         Else
             WinActivate ("Minesweeper")
             WinWaitActive("Minesweeper")
     EndIf
-;Have Minesweeper////////////////////////////////////////////////////////////////// 
-    
-    $size = WinGetPos("Minesweeper")
-    $xstart = $size[0]+15
-    $ystart = $size[1]+96
-    $box    = 16
+;Have Minesweeper//////////////////////////////////////////////////////////////////
 
 ;Start////////////////////////////////////////////////////////////////////////////
-    
-    $n = 0
-    $xx = $size[0]
-    $yy = $size[1]
-    
-    Do
-        randclick($n)
-                
-    Until $n = 2
 
-    while 1 
-    scan() ;findflaggables()
+	reStart()
+    while 1
+		scan() ;findflaggables()
     wend
 
-    
+
 ;finds if there are flaggables near.
     Func canflag($xv, $yv, $sum, $getnum)
-        
+
         $size = WinGetPos("Minesweeper")
-        
-        If $xv = $size[0] + 15 Then;for leftest column
-            If $yv = $size[1] + 96 Then;for top left box
-                $sumF = getFstat($xv+16, $yv) + getFstat($xv+16, $yv+16) + getFstat( $xv, $yv+16)
+
+        If $xv = $size[0] + $xoffset Then;for leftest column
+            If $yv = $size[1] + $yOffset Then;for top left box
+                $sumF = getFstat($xv+$box, $yv) + getFstat($xv+$box, $yv+$box) + getFstat( $xv, $yv+$box)
                 If $sumF = $getnum Then
-                    cnf($xv+16, $yv)
-                    cnf($xv+16, $yv+16)
-                    cnf($xv, $yv+16)
+                    cnf($xv+$box, $yv)
+                    cnf($xv+$box, $yv+$box)
+                    cnf($xv, $yv+$box)
                 ElseIf $sum + $sumF = $getnum Then
-                    fnf($xv+16, $yv)
-                    fnf($xv+16, $yv+16)
-                    cnf($xv, $yv+16)
+                    fnf($xv+$box, $yv)
+                    fnf($xv+$box, $yv+$box)
+                    cnf($xv, $yv+$box)
                 EndIf
-            ElseIf $yv = $size[1] + $size[3] - 27 Then;for bottom left box
-                $sumF = getFstat($xv+16, $yv) + getFstat( $xv, $yv-16) + getFstat( $xv+16, $yv-16)
+            ElseIf $yv = $size[1] + $size[3] - $xBorder Then;for bottom left box
+                $sumF = getFstat($xv+$box, $yv) + getFstat( $xv, $yv-$box) + getFstat( $xv+$box, $yv-$box)
                 If $sumF = $getnum Then
-                    cnf($xv+16, $yv)
-                    cnf($xv, $yv-16)
-                    cnf($xv+16, $yv-16)
+                    cnf($xv+$box, $yv)
+                    cnf($xv, $yv-$box)
+                    cnf($xv+$box, $yv-$box)
                 ElseIf $sum + $sumF = $getnum Then
-                    fnf($xv+16, $yv)
-                    fnf($xv, $yv-16)
-                    fnf($xv+16, $yv-16)
+                    fnf($xv+$box, $yv)
+                    fnf($xv, $yv-$box)
+                    fnf($xv+$box, $yv-$box)
                 EndIf
             Else  ;the same for only left column
-                $sumF = getFstat($xv+16, $yv) + getFstat($xv+16, $yv+16) + getFstat( $xv, $yv+16) + getFstat( $xv, $yv-16) + getFstat( $xv+16, $yv-16)
+                $sumF = getFstat($xv+$box, $yv) + getFstat($xv+$box, $yv+$box) + getFstat( $xv, $yv+$box) + getFstat( $xv, $yv-$box) + getFstat( $xv+$box, $yv-$box)
                 If $sumF = $getnum Then
-                    cnf($xv+16, $yv)
-                    cnf($xv+16, $yv+16)
-                    cnf($xv, $yv+16)
-                    cnf($xv, $yv-16)
-                    cnf($xv+16, $yv-16)
+                    cnf($xv+$box, $yv)
+                    cnf($xv+$box, $yv+$box)
+                    cnf($xv, $yv+$box)
+                    cnf($xv, $yv-$box)
+                    cnf($xv+$box, $yv-$box)
                 ElseIf $sum + $sumF = $getnum Then
-                    fnf($xv+16, $yv)
-                    fnf($xv+16, $yv+16)
-                    fnf($xv, $yv+16)
-                    fnf($xv, $yv-16)
-                    fnf($xv+16, $yv-16)
+                    fnf($xv+$box, $yv)
+                    fnf($xv+$box, $yv+$box)
+                    fnf($xv, $yv+$box)
+                    fnf($xv, $yv-$box)
+                    fnf($xv+$box, $yv-$box)
                 EndIf
-            EndIf   
-        ElseIf $yv = $size[1] + 96 Then;for top row only
-                If $xv = $size[0] + $size[2] - 27 Then;top right box
-                $sumF = getFstat( $xv, $yv+16) + getFstat( $xv-16, $yv+16) + getFstat( $xv-16, $yv) 
+            EndIf
+        ElseIf $yv = $size[1] + $yOffset Then;for top row only
+                If $xv = $size[0] + $size[2] - $xBorder Then;top right box
+                $sumF = getFstat( $xv, $yv+$box) + getFstat( $xv-$box, $yv+$box) + getFstat( $xv-$box, $yv)
                     If $sumF = $getnum Then
-                        cnf($xv, $yv+16)
-                        cnf($xv-16, $yv+16)
-                        cnf($xv-16, $yv)
+                        cnf($xv, $yv+$box)
+                        cnf($xv-$box, $yv+$box)
+                        cnf($xv-$box, $yv)
                     ElseIf $sum + $sumF = $getnum Then
-                        fnf($xv, $yv+16)
-                        fnf($xv-16, $yv+16)
-                        fnf($xv-16, $yv)
+                        fnf($xv, $yv+$box)
+                        fnf($xv-$box, $yv+$box)
+                        fnf($xv-$box, $yv)
                     EndIf
                 Else
-                $sumF = getFstat($xv+16, $yv) + getFstat($xv+16, $yv+16) + getFstat( $xv, $yv+16) + getFstat( $xv-16, $yv+16) + getFstat( $xv-16, $yv) 
+                $sumF = getFstat($xv+$box, $yv) + getFstat($xv+$box, $yv+$box) + getFstat( $xv, $yv+$box) + getFstat( $xv-$box, $yv+$box) + getFstat( $xv-$box, $yv)
                     If $sumF = $getnum Then
-                        cnf($xv+16, $yv)
-                        cnf($xv+16, $yv+16)
-                        cnf($xv, $yv+16)
-                        cnf($xv-16, $yv+16)
-                        cnf($xv-16, $yv)
+                        cnf($xv+$box, $yv)
+                        cnf($xv+$box, $yv+$box)
+                        cnf($xv, $yv+$box)
+                        cnf($xv-$box, $yv+$box)
+                        cnf($xv-$box, $yv)
                     ElseIf $sum + $sumF = $getnum Then
-                        fnf($xv+16, $yv)
-                        fnf($xv+16, $yv+16)
-                        fnf($xv, $yv+16)
-                        fnf($xv-16, $yv+16)
-                        fnf($xv-16, $yv)
+                        fnf($xv+$box, $yv)
+                        fnf($xv+$box, $yv+$box)
+                        fnf($xv, $yv+$box)
+                        fnf($xv-$box, $yv+$box)
+                        fnf($xv-$box, $yv)
                     EndIf
                 EndIf
-        ElseIf $xv = $size[0] + $size[2] - 27 Then;rightest column
-                If $yv = $size[1] + $size[3] - 27 Then
-                $sumF = getFstat( $xv-16, $yv) + getFstat( $xv-16, $yv-16) + getFstat( $xv, $yv-16) 
+        ElseIf $xv = $size[0] + $size[2] - $xBorder Then;rightest column
+                If $yv = $size[1] + $size[3] - $xBorder Then
+                $sumF = getFstat( $xv-$box, $yv) + getFstat( $xv-$box, $yv-$box) + getFstat( $xv, $yv-$box)
                     If $sumF = $getnum Then
-                        cnf($xv-16, $yv)
-                        cnf($xv-16, $yv-16)
-                        cnf($xv, $yv-16)
+                        cnf($xv-$box, $yv)
+                        cnf($xv-$box, $yv-$box)
+                        cnf($xv, $yv-$box)
                     ElseIf $sum + $sumF = $getnum Then
-                        fnf($xv-16, $yv)
-                        fnf($xv-16, $yv-16)
-                        fnf($xv, $yv-16)
+                        fnf($xv-$box, $yv)
+                        fnf($xv-$box, $yv-$box)
+                        fnf($xv, $yv-$box)
                     EndIf
                 Else
-                $sumF = getFstat( $xv, $yv+16) + getFstat( $xv-16, $yv+16) + getFstat( $xv-16, $yv) + getFstat( $xv-16, $yv-16) + getFstat( $xv, $yv-16)
+                $sumF = getFstat( $xv, $yv+$box) + getFstat( $xv-$box, $yv+$box) + getFstat( $xv-$box, $yv) + getFstat( $xv-$box, $yv-$box) + getFstat( $xv, $yv-$box)
                     If $sumF = $getnum Then
-                        cnf($xv, $yv+16)
-                        cnf($xv-16, $yv+16)
-                        cnf($xv-16, $yv)
-                        cnf($xv-16, $yv-16)
-                        cnf($xv, $yv-16)
+                        cnf($xv, $yv+$box)
+                        cnf($xv-$box, $yv+$box)
+                        cnf($xv-$box, $yv)
+                        cnf($xv-$box, $yv-$box)
+                        cnf($xv, $yv-$box)
                     ElseIf $sum + $sumF = $getnum Then
-                        fnf($xv, $yv+16)
-                        fnf($xv-16, $yv+16)
-                        fnf($xv-16, $yv)
-                        fnf($xv-16, $yv-16)
-                        fnf($xv, $yv-16)
+                        fnf($xv, $yv+$box)
+                        fnf($xv-$box, $yv+$box)
+                        fnf($xv-$box, $yv)
+                        fnf($xv-$box, $yv-$box)
+                        fnf($xv, $yv-$box)
                     EndIf
                 EndIf
-        ElseIf $yv = $size[1] + $size[3] - 27 Then;bottom row
-                $sumF = getFstat($xv+16, $yv) + getFstat( $xv-16, $yv) + getFstat( $xv-16, $yv-16) + getFstat( $xv, $yv-16) + getFstat( $xv+16, $yv-16) 
+        ElseIf $yv = $size[1] + $size[3] - $xBorder Then;bottom row
+                $sumF = getFstat($xv+$box, $yv) + getFstat( $xv-$box, $yv) + getFstat( $xv-$box, $yv-$box) + getFstat( $xv, $yv-$box) + getFstat( $xv+$box, $yv-$box)
                 If $sumF = $getnum Then
-                    cnf($xv+16, $yv)
-                    cnf($xv-16, $yv)
-                    cnf($xv-16, $yv-16)
-                    cnf($xv, $yv-16)
-                    cnf($xv+16, $yv-16)
+                    cnf($xv+$box, $yv)
+                    cnf($xv-$box, $yv)
+                    cnf($xv-$box, $yv-$box)
+                    cnf($xv, $yv-$box)
+                    cnf($xv+$box, $yv-$box)
                 ElseIf $sum + $sumF = $getnum Then
-                    fnf($xv+16, $yv)
-                    fnf($xv-16, $yv)
-                    fnf($xv-16, $yv-16)
-                    fnf($xv, $yv-16)
-                    fnf($xv+16, $yv-16)
+                    fnf($xv+$box, $yv)
+                    fnf($xv-$box, $yv)
+                    fnf($xv-$box, $yv-$box)
+                    fnf($xv, $yv-$box)
+                    fnf($xv+$box, $yv-$box)
                 EndIf
         Else
-                $sumF = getFstat($xv+16, $yv) + getFstat($xv+16, $yv+16) + getFstat( $xv, $yv+16) + getFstat( $xv-16, $yv+16) + getFstat( $xv-16, $yv) + getFstat( $xv-16, $yv-16) + getFstat( $xv, $yv-16) + getFstat( $xv+16, $yv-16) 
+                $sumF = getFstat($xv+$box, $yv) + getFstat($xv+$box, $yv+$box) + getFstat( $xv, $yv+$box) + getFstat( $xv-$box, $yv+$box) + getFstat( $xv-$box, $yv) + getFstat( $xv-$box, $yv-$box) + getFstat( $xv, $yv-$box) + getFstat( $xv+$box, $yv-$box)
                 If $sumF = $getnum Then
-                    cnf($xv+16, $yv)
-                    cnf($xv+16, $yv+16)
-                    cnf($xv, $yv+16)
-                    cnf($xv-16, $yv+16)
-                    cnf($xv-16, $yv)
-                    cnf($xv-16, $yv-16)
-                    cnf($xv, $yv-16)
-                    cnf($xv+16, $yv-16)
+                    cnf($xv+$box, $yv)
+                    cnf($xv+$box, $yv+$box)
+                    cnf($xv, $yv+$box)
+                    cnf($xv-$box, $yv+$box)
+                    cnf($xv-$box, $yv)
+                    cnf($xv-$box, $yv-$box)
+                    cnf($xv, $yv-$box)
+                    cnf($xv+$box, $yv-$box)
                 ElseIf $sum + $sumF = $getnum Then
-                    fnf($xv+16, $yv)
-                    fnf($xv+16, $yv+16)
-                    fnf($xv, $yv+16)
-                    fnf($xv-16, $yv+16)
-                    fnf($xv-16, $yv)
-                    fnf($xv-16, $yv-16)
-                    fnf($xv, $yv-16)
-                    fnf($xv+16, $yv-16)
+                    fnf($xv+$box, $yv)
+                    fnf($xv+$box, $yv+$box)
+                    fnf($xv, $yv+$box)
+                    fnf($xv-$box, $yv+$box)
+                    fnf($xv-$box, $yv)
+                    fnf($xv-$box, $yv-$box)
+                    fnf($xv, $yv-$box)
+                    fnf($xv+$box, $yv-$box)
                 EndIf
         EndIf
     EndFunc
@@ -179,7 +177,7 @@ HotKeySet("{HOME}", "reload")
 ;check box number after click
     Func getnum($x, $y)
         $color = PixelGetColor($x+9, $y+12)
-        
+
         If $color = 12632256      Then;gray     0
             Return 0
         ElseIf $color = 255    Then;blue      1
@@ -192,11 +190,11 @@ HotKeySet("{HOME}", "reload")
             Return 4
         ElseIf $color = 8388608   Then ;Dkred   5
             Return 5
-        ElseIf $color = 32896      Then;teal    6   
+        ElseIf $color = 32896      Then;teal    6
             Return 6
         ElseIf $color = 0      Then;MINE    END mine red16711680
             Return 0
-        Else    
+        Else
     ;Didn't get PixelGetColor HAVE 7 OR 8 Yet
             Return 3  ;if other return 3, just because (Forgot why i did that)
         EndIf
@@ -216,7 +214,7 @@ HotKeySet("{HOME}", "reload")
             EndIf
         EndIf
     EndFunc
-    
+
 ;check if box is flagged if so 1
     Func getFstat($x, $y)
         $color = PixelGetColor($x, $y)
@@ -244,7 +242,7 @@ HotKeySet("{HOME}", "reload")
                 MouseClick("Right", $x, $y, 1, 0)
             EndIf
         EndIf
-        
+
     EndFunc
 
 ;Click a not flagged
@@ -258,83 +256,83 @@ HotKeySet("{HOME}", "reload")
                 MouseClick("Left", $x, $y, 1, 0)
             EndIf
         EndIf
-        
+
     EndFunc
 
 ;RANDOM clicks when stuck
     Func randclick(ByRef $n)
         $size = WinGetPos("Minesweeper")
-        $xstart = $size[0]+15
-        $ystart = $size[1]+96
-        
-        $xmines = ($size[2] - 26) / 16
-        $ymines = ($size[3] - 107) / 16
-        
+        $xstart = $size[0]+$xOffset
+        $ystart = $size[1]+$yOffset
+
+        $xmines = ($size[2] - ($xBorder)) / $box
+        $ymines = ($size[3] - ($yBorder)) / $box
+
         Do
             $i = 0
             $rx = Random (0, $xmines - 1, 1)
             $ry = Random (0, $ymines - 1, 1)
-            
-            If PixelGetColor(($rx * 16) + $xstart, ($ry * 16) + $ystart) = 16777215 Then
-                If getNstat(($rx * 16) + $xstart, ($ry * 16) + $ystart) < 2 Then
-                    If Not PixelGetColor(($rx * 16) + $xstart + 9, ($ry * 16) + $ystart + 12) = 0 Then
-                        MouseClick("Left", ($rx * 16) + $xstart, ($ry * 16) + $ystart, 1, 0)
+
+            If PixelGetColor(($rx * $box) + $xstart, ($ry * $box) + $ystart) = 16777215 Then
+                If getNstat(($rx * $box) + $xstart, ($ry * $box) + $ystart) < 2 Then
+                    If Not PixelGetColor(($rx * $box) + $xstart + 9, ($ry * $box) + $ystart + 12) = 0 Then
+                        MouseClick("Left", ($rx * $box) + $xstart, ($ry * $box) + $ystart, 1, 0)
                         $i = 1
-                        $getdanum = getnum(($rx * 16) + $xstart, ($ry * 16) + $ystart)
+                        $getdanum = getnum(($rx * $box) + $xstart, ($ry * $box) + $ystart)
                         If $getdanum = 0 Then
                             $n = $n+1
                         EndIf
-                        If PixelGetColor(($rx * 16) + $xstart + 9, ($ry * 16) + $ystart + 12) = 0 Then
-                        reload()
-                        $i = 0
-                        $n = 0
+                        If PixelGetColor(($rx * $box) + $xstart + 9, ($ry * $box) + $ystart + 12) = 0 Then
+							reload()
+							$i = 0
+							$n = 0
                         EndIf
                     EndIf
                 EndIf
             EndIf
-        
+
         Until $i = 1
-    
+
     EndFunc
 
 ;Scan through
     Func scan()
         $size = WinGetPos("Minesweeper")
-        $xmines = ($size[2] - 26) / 16
-        $ymines = ($size[3] - 107) / 16
-        $xv = $size[0] + 15
-        $yv = $size[1] + 96
-        
+        $xmines = ($size[2] - $xBorder) / $box	;width minus border outside of boxes
+        $ymines = ($size[3] - $yBorder) / $box
+        $xv = $size[0] + $xOffset
+        $yv = $size[1] + $yOffset
+
         For $ycount = 0 To $ymines - 1  Step 1
             For $xcount = 0 To $xmines - 1 Step 1
-                If PixelGetColor($xv + 16 * $xcount, $yv + 16 * $ycount) = 8421504 Then
-                    $number = getnum($xv + 16 * $xcount, $yv + 16 * $ycount) 
+                If PixelGetColor($xv + $box * $xcount, $yv + $box * $ycount) = 8421504 Then
+                    $number = getnum($xv + $box * $xcount, $yv + $box * $ycount)
                     If NOT $number = 0 Then
-                        $thesum = getAstat($xv + 16 * $xcount, $yv + 16 * $ycount)
+                        $thesum = getAstat($xv + $box * $xcount, $yv + $box * $ycount)
                         If $thesum > 0 Then
-                            MouseMove($xv + 16 * $xcount, $yv + 16 * $ycount, 0)
-                            canflag($xv + 16 * $xcount, $yv + 16 * $ycount, $thesum, $number)
+                            MouseMove($xv + $box * $xcount, $yv + $box * $ycount, 0)
+                            canflag($xv + $box * $xcount, $yv + $box * $ycount, $thesum, $number)
                         EndIf
-                    EndIf   
+                    EndIf
                 EndIf
             Next
         Next
-        
+
         For $ycount = $ymines - 1 To 0  Step -1
             For $xcount = $xmines - 1 To 0 Step -1
-                If PixelGetColor($xv + 16 * $xcount, $yv + 16 * $ycount) = 8421504 Then
-                    $number = getnum($xv + 16 * $xcount, $yv + 16 * $ycount) 
+                If PixelGetColor($xv + $box * $xcount, $yv + $box * $ycount) = 8421504 Then
+                    $number = getnum($xv + $box * $xcount, $yv + $box * $ycount)
                     If NOT $number = 0 Then
-                        $thesum = getAstat($xv + 16 * $xcount, $yv + 16 * $ycount)
+                        $thesum = getAstat($xv + $box * $xcount, $yv + $box * $ycount)
                         If $thesum > 0 Then
-                            MouseMove($xv + 16 * $xcount, $yv + 16 * $ycount, 0)
-                            canflag($xv + 16 * $xcount, $yv + 16 * $ycount, $thesum, $number)
+                            MouseMove($xv + $box * $xcount, $yv + $box * $ycount, 0)
+                            canflag($xv + $box * $xcount, $yv + $box * $ycount, $thesum, $number)
                         EndIf
-                    EndIf   
+                    EndIf
                 EndIf
             Next
         Next
-        
+
 
     EndFunc
 
@@ -342,92 +340,104 @@ HotKeySet("{HOME}", "reload")
     Func getAstat($xv, $yv)
         $size = WinGetPos("Minesweeper")
         $sum = 0
-        
-        If $xv = $size[0] + 15 Then;for leftest column
-            If $yv = $size[1] + 96 Then;for top left box
-                $sum = getstat($xv+16, $yv) + getstat($xv+16, $yv+16) + getstat( $xv, $yv+16)
-                Return $sum         
-            ElseIf $yv = $size[1] + $size[3] - 27 Then;for bottom left box
-                $sum = getstat($xv+16, $yv) + getstat( $xv, $yv-16) + getstat( $xv+16, $yv-16)
-                Return $sum             
+
+        If $xv = $size[0] + $xOffset Then;for leftest column
+            If $yv = $size[1] + $yOffset Then;for top left box
+                $sum = getstat($xv+$box, $yv) + getstat($xv+$box, $yv+$box) + getstat( $xv, $yv+$box)
+                Return $sum
+            ElseIf $yv = $size[1] + $size[3] - $xBorder Then;for bottom left box
+                $sum = getstat($xv+$box, $yv) + getstat( $xv, $yv-$box) + getstat( $xv+$box, $yv-$box)
+                Return $sum
             Else  ;the same for only left column
-                $sum = getstat($xv+16, $yv) + getstat($xv+16, $yv+16) + getstat( $xv, $yv+16) + getstat( $xv, $yv-16) + getstat( $xv+16, $yv-16) 
-                Return $sum             
-            EndIf   
-        ElseIf $yv = $size[1] + 96 Then;for top row only
-                If $xv = $size[0] + $size[2] - 27 Then;top right box
-                $sum = getstat( $xv, $yv+16) + getstat( $xv-16, $yv+16) + getstat( $xv-16, $yv) 
-                Return $sum             
+                $sum = getstat($xv+$box, $yv) + getstat($xv+$box, $yv+$box) + getstat( $xv, $yv+$box) + getstat( $xv, $yv-$box) + getstat( $xv+$box, $yv-$box)
+                Return $sum
+            EndIf
+        ElseIf $yv = $size[1] + $yOffset Then;for top row only
+                If $xv = $size[0] + $size[2] - $xBorder Then;top right box
+                $sum = getstat( $xv, $yv+$box) + getstat( $xv-$box, $yv+$box) + getstat( $xv-$box, $yv)
+                Return $sum
                 Else
-                $sum = getstat($xv+16, $yv) + getstat($xv+16, $yv+16) + getstat( $xv, $yv+16) + getstat( $xv-16, $yv+16) + getstat( $xv-16, $yv) 
-                Return $sum             
+                $sum = getstat($xv+$box, $yv) + getstat($xv+$box, $yv+$box) + getstat( $xv, $yv+$box) + getstat( $xv-$box, $yv+$box) + getstat( $xv-$box, $yv)
+                Return $sum
                 EndIf
-        ElseIf $xv = $size[0] + $size[2] - 27 Then;rightest column
-                If $yv = $size[1] + $size[3] - 27 Then
-                $sum = getstat( $xv-16, $yv) + getstat( $xv-16, $yv-16) + getstat( $xv, $yv-16) 
-                Return $sum                 
+        ElseIf $xv = $size[0] + $size[2] - $xBorder Then;rightest column
+                If $yv = $size[1] + $size[3] - $xBorder Then
+                $sum = getstat( $xv-$box, $yv) + getstat( $xv-$box, $yv-$box) + getstat( $xv, $yv-$box)
+                Return $sum
                 Else
-                $sum = getstat( $xv, $yv+16) + getstat( $xv-16, $yv+16) + getstat( $xv-16, $yv) + getstat( $xv-16, $yv-16) + getstat( $xv, $yv-16)
-                Return $sum                 
+                $sum = getstat( $xv, $yv+$box) + getstat( $xv-$box, $yv+$box) + getstat( $xv-$box, $yv) + getstat( $xv-$box, $yv-$box) + getstat( $xv, $yv-$box)
+                Return $sum
                 EndIf
-        ElseIf $yv = $size[1] + $size[3] - 27 Then;bottom row
-                $sum = getstat($xv+16, $yv) + getstat( $xv-16, $yv) + getstat( $xv-16, $yv-16) + getstat( $xv, $yv-16) + getstat( $xv+16, $yv-16) 
-                Return $sum             
+        ElseIf $yv = $size[1] + $size[3] - $xBorder Then;bottom row
+                $sum = getstat($xv+$box, $yv) + getstat( $xv-$box, $yv) + getstat( $xv-$box, $yv-$box) + getstat( $xv, $yv-$box) + getstat( $xv+$box, $yv-$box)
+                Return $sum
         Else
-                $sum = getstat($xv+16, $yv) + getstat($xv+16, $yv+16) + getstat( $xv, $yv+16) + getstat( $xv-16, $yv+16) + getstat( $xv-16, $yv) + getstat( $xv-16, $yv-16) + getstat( $xv, $yv-16) + getstat( $xv+16, $yv-16) 
+                $sum = getstat($xv+$box, $yv) + getstat($xv+$box, $yv+$box) + getstat( $xv, $yv+$box) + getstat( $xv-$box, $yv+$box) + getstat( $xv-$box, $yv) + getstat( $xv-$box, $yv-$box) + getstat( $xv, $yv-$box) + getstat( $xv+$box, $yv-$box)
                 Return $sum
         EndIf
     EndFunc
-    
+
 ;find and flag
     Func getNstat($x, $y)
         $size = WinGetPos("Minesweeper")
         $xv = $x
         $yv = $y
         $sum = 0
-        
-        If $xv = $size[0] + 15 Then;for leftest column
-            If $yv = $size[1] + 96 Then;for top left box
-                $sum = getnum($xv+16, $yv) + getnum($xv+16, $yv+16) + getnum( $xv, $yv+16)
-                Return $sum         
-            ElseIf $yv = $size[1] + $size[3] - 27 Then;for bottom left box
-                $sum = getnum($xv+16, $yv) + getnum( $xv, $yv-16) + getnum( $xv+16, $yv-16)
-                Return $sum             
+
+        If $xv = $size[0] + $xOffset Then;for leftest column
+            If $yv = $size[1] + $yOffset Then;for top left box
+                $sum = getnum($xv+$box, $yv) + getnum($xv+$box, $yv+$box) + getnum( $xv, $yv+$box)
+                Return $sum
+            ElseIf $yv = $size[1] + $size[3] - $xBorder Then;for bottom left box
+                $sum = getnum($xv+$box, $yv) + getnum( $xv, $yv-$box) + getnum( $xv+$box, $yv-$box)
+                Return $sum
             Else  ;the speal for only left column
-                $sum = getnum($xv+16, $yv) + getnum($xv+16, $yv+16) + getnum( $xv, $yv+16) + getnum( $xv, $yv-16) + getnum( $xv+16, $yv-16) 
-                Return $sum             
-            EndIf   
-        ElseIf $yv = $size[1] + 96 Then;for top row only
-                If $xv = $size[0] + $size[2] - 27 Then;top right box
-                $sum = getnum( $xv, $yv+16) + getnum( $xv-16, $yv+16) + getnum( $xv-16, $yv) 
-                Return $sum             
+                $sum = getnum($xv+$box, $yv) + getnum($xv+$box, $yv+$box) + getnum( $xv, $yv+$box) + getnum( $xv, $yv-$box) + getnum( $xv+$box, $yv-$box)
+                Return $sum
+            EndIf
+        ElseIf $yv = $size[1] + $yOffset Then;for top row only
+                If $xv = $size[0] + $size[2] - $xBorder Then;top right box
+                $sum = getnum( $xv, $yv+$box) + getnum( $xv-$box, $yv+$box) + getnum( $xv-$box, $yv)
+                Return $sum
                 Else
-                $sum = getnum($xv+16, $yv) + getnum($xv+16, $yv+16) + getnum( $xv, $yv+16) + getnum( $xv-16, $yv+16) + getnum( $xv-16, $yv) 
-                Return $sum             
+                $sum = getnum($xv+$box, $yv) + getnum($xv+$box, $yv+$box) + getnum( $xv, $yv+$box) + getnum( $xv-$box, $yv+$box) + getnum( $xv-$box, $yv)
+                Return $sum
                 EndIf
-        ElseIf $xv = $size[0] + $size[2] - 27 Then;rightest column
-                If $yv = $size[1] + $size[3] - 27 Then
-                $sum = getnum( $xv-16, $yv) + getnum( $xv-16, $yv-16) + getnum( $xv, $yv-16) 
-                Return $sum                 
+        ElseIf $xv = $size[0] + $size[2] - $xBorder Then;rightest column
+                If $yv = $size[1] + $size[3] - $xBorder Then
+                $sum = getnum( $xv-$box, $yv) + getnum( $xv-$box, $yv-$box) + getnum( $xv, $yv-$box)
+                Return $sum
                 Else
-                $sum = getnum( $xv, $yv+16) + getnum( $xv-16, $yv+16) + getnum( $xv-16, $yv) + getnum( $xv-16, $yv-16) + getnum( $xv, $yv-16)
-                Return $sum                 
+                $sum = getnum( $xv, $yv+$box) + getnum( $xv-$box, $yv+$box) + getnum( $xv-$box, $yv) + getnum( $xv-$box, $yv-$box) + getnum( $xv, $yv-$box)
+                Return $sum
                 EndIf
-        ElseIf $yv = $size[1] + $size[3] - 27 Then;bottom row
-                $sum = getnum($xv+16, $yv) + getnum( $xv-16, $yv) + getnum( $xv-16, $yv-16) + getnum( $xv, $yv-16) + getnum( $xv+16, $yv-16) 
-                Return $sum             
+        ElseIf $yv = $size[1] + $size[3] - $xBorder Then;bottom row
+                $sum = getnum($xv+$box, $yv) + getnum( $xv-$box, $yv) + getnum( $xv-$box, $yv-$box) + getnum( $xv, $yv-$box) + getnum( $xv+$box, $yv-$box)
+                Return $sum
         Else
-                $sum = getnum($xv+16, $yv) + getnum($xv+16, $yv+16) + getnum( $xv, $yv+16) + getnum( $xv-16, $yv+16) + getnum( $xv-16, $yv) + getnum( $xv-16, $yv-16) + getnum( $xv, $yv-16) + getnum( $xv+16, $yv-16) 
+                $sum = getnum($xv+$box, $yv) + getnum($xv+$box, $yv+$box) + getnum( $xv, $yv+$box) + getnum( $xv-$box, $yv+$box) + getnum( $xv-$box, $yv) + getnum( $xv-$box, $yv-$box) + getnum( $xv, $yv-$box) + getnum( $xv+$box, $yv-$box)
                 Return $sum
         EndIf
     EndFunc
 
 ;reload
-    Func reload()           
-            MouseClick("Left", $size[0] + $size[2] / 2, $size[1] + 70, 1, 0)
-            Sleep(10)
+    Func reload()
+		$size = WinGetPos("Minesweeper")
+		MouseClick("Left", $size[0] + $size[2] / 2, $size[1] + 70, 1, 0)
+		Sleep(20)
+	EndFunc
+
+;reload
+    Func reStart()
+		reload()
+
+		$n = 0
+		Do
+			randclick($n)
+		Until $n = 2
     EndFunc
+
 ;Exit
     Func Terminate()
-    Exit 0
+		Exit 0
     EndFunc
